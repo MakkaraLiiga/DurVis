@@ -13,42 +13,62 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="settings">
+      <UniqueIdentifier>{a55ed0c3-dc97-415b-8fe7-de0cd259e951}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DurVis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CanvasWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DurVisGamepad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MappedMemory.cpp">
+    <ClCompile Include="RgbaColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasColor.cpp">
+    <ClCompile Include="SharedMemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnalogDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DurVisPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DurVis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CanvasWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DurVisGamepad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MappedMemory.h">
+    <ClInclude Include="RgbaColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrawHelpers.h">
+    <ClInclude Include="SharedMemory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CanvasColor.h">
+    <ClInclude Include="GraphDrawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IterableQueue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnalogDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DurVisPlugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="durvisplugin.set">
+      <Filter>settings</Filter>
+    </None>
   </ItemGroup>
 </Project>

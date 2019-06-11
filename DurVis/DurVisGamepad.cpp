@@ -1,98 +1,66 @@
 #include "DurVisGamepad.h"
-#include "MappedMemory.h"
-#include "bakkesmod/plugin/bakkesmodplugin.h"
+#include "SharedMemory.h"
 
-DurVisGamepad::DurVisGamepad(int source)
-{
-	_source = source;
+DurVisGamepad::DurVisGamepad() {
+    buttons[0] = GamepadButton(XINPUT_GAMEPAD_DPAD_UP, "Dup");
+    buttons[1] = GamepadButton(XINPUT_GAMEPAD_DPAD_DOWN, "Ddown");
+    buttons[2] = GamepadButton(XINPUT_GAMEPAD_DPAD_LEFT, "Dleft");
+    buttons[3] = GamepadButton(XINPUT_GAMEPAD_DPAD_RIGHT, "Dright");
+    buttons[4] = GamepadButton(XINPUT_GAMEPAD_START, "Start");
+    buttons[5] = GamepadButton(XINPUT_GAMEPAD_BACK, "Back");
+    buttons[6] = GamepadButton(XINPUT_GAMEPAD_LEFT_THUMB, "LS");
+    buttons[7] = GamepadButton(XINPUT_GAMEPAD_RIGHT_THUMB, "RS");
+    buttons[8] = GamepadButton(XINPUT_GAMEPAD_LEFT_SHOULDER, "LB");
+    buttons[9] = GamepadButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, "RB");
+    buttons[10] = GamepadButton(XINPUT_GAMEPAD_A, "A");
+    buttons[11] = GamepadButton(XINPUT_GAMEPAD_B, "B");
+    buttons[12] = GamepadButton(XINPUT_GAMEPAD_X, "X");
+    buttons[13] = GamepadButton(XINPUT_GAMEPAD_Y, "Y");
 }
 
-void DurVisGamepad::update(int i)
-{
-	DWORD dwResult;
-	//get state from mem region
-	if (_source == 0) _state = MappedMemory::getInstance()->getGamepadStateBefor(i);
-	else if (_source == 1) _state = MappedMemory::getInstance()->getGamepadStateAfter(i);
-	//else if (_source == 2) dwResult = XInputGetState(i, &_state);
+void DurVisGamepad::Update(XINPUT_STATE state) {
+    state_ = state;
 }
 
-int DurVisGamepad::getAnalog(int analogControl)
-{
-	switch (analogControl)
-	{
-		case Gamepad::LT: return _state.Gamepad.bLeftTrigger;
-		case Gamepad::RT: return _state.Gamepad.bRightTrigger;
-		case Gamepad::LX: return _state.Gamepad.sThumbLX;
-		case Gamepad::LY: return _state.Gamepad.sThumbLY;
-		case Gamepad::RX: return _state.Gamepad.sThumbRX;
-		case Gamepad::RY: return _state.Gamepad.sThumbRY;
-		default: return 0;
-	}
+uint8_t DurVisGamepad::GetTrigger(int analogControl) {
+    switch (analogControl) {
+        case Analog::LT: return state_.Gamepad.bLeftTrigger;
+        case Analog::RT: return state_.Gamepad.bRightTrigger;
+        default: return 0;
+    }
 }
 
-string DurVisGamepad::getButtonsPressedString(string delimiter)
-{
-	string r = "";
-	for (int i = 0; i < 14; i++)
-	{
-		if (getButtonPressed(i))
-		{
-			if (r != "") r += delimiter;
-			r += getButtonAsString(i);
-		}
-	}
-	return r;
+int16_t DurVisGamepad::GetStick(int analogControl) {
+    switch (analogControl) {
+        case Analog::LX: return state_.Gamepad.sThumbLX;
+        case Analog::LY: return state_.Gamepad.sThumbLY;
+        case Analog::RX: return state_.Gamepad.sThumbRX;
+        case Analog::RY: return state_.Gamepad.sThumbRY;
+        default: return 0;
+    }
 }
 
-bool DurVisGamepad::getButtonPressed(int button)
-{
-	return (_state.Gamepad.wButtons & getButtonStateByNumber(button)) != 0;
+std::string DurVisGamepad::GetButtonsPressedString(std::string delimiter) {
+    std::string r = "";
+    for (int i = 0; i < 14; i++) {
+        if (GetButtonPressed(i)) {
+            if (r != "") r += delimiter;
+            r += buttons[i].drawName;
+        }
+    }
+    if (r == "") {
+        ButtonsPressedFrames_ = 0;
+    } else {
+        ButtonsPressedFrames_++;
+        ButtonsPressedFramesLast_ = ButtonsPressedFrames_;
+    }
+    return std::to_string(ButtonsPressedFramesLast_) + "f " + r;
 }
 
-int DurVisGamepad::getButtonStateByNumber(int num)
-{
-	switch (num)
-	{
-	case 0:		return XINPUT_GAMEPAD_DPAD_UP;
-	case 1:		return XINPUT_GAMEPAD_DPAD_DOWN;
-	case 2:		return XINPUT_GAMEPAD_DPAD_LEFT;
-	case 3:		return XINPUT_GAMEPAD_DPAD_RIGHT;
-	case 4:		return XINPUT_GAMEPAD_START;
-	case 5:		return XINPUT_GAMEPAD_BACK;
-	case 6:		return XINPUT_GAMEPAD_LEFT_THUMB;
-	case 7:		return XINPUT_GAMEPAD_RIGHT_THUMB;
-	case 8:		return XINPUT_GAMEPAD_LEFT_SHOULDER;
-	case 9:		return XINPUT_GAMEPAD_RIGHT_SHOULDER;
-	case 10:	return XINPUT_GAMEPAD_A;
-	case 11:	return XINPUT_GAMEPAD_B;
-	case 12:	return XINPUT_GAMEPAD_X;
-	case 13:	return XINPUT_GAMEPAD_Y;
-	default: return 0;
-	}
+int DurVisGamepad::GetButtonPressedFrames() {
+    return ButtonsPressedFramesLast_;
 }
 
-string DurVisGamepad::getButtonAsString(int num)
-{
-	switch (num)
-	{
-	case 0:		return "Dup";
-	case 1:		return "Ddown";
-	case 2:		return "Dleft";
-	case 3:		return "Dright";
-	case 4:		return "Start";
-	case 5:		return "Back";
-	case 6:		return "LS";
-	case 7:		return "RS";
-	case 8:		return "LB";
-	case 9:		return "RB";
-	case 10:	return "A";
-	case 11:	return "B";
-	case 12:	return "X";
-	case 13:	return "Y";
-	default: return "";
-	}
-}
-
-DurVisGamepad::~DurVisGamepad()
-{
+bool DurVisGamepad::GetButtonPressed(int buttonIndex) {
+    return ( state_.Gamepad.wButtons & buttons[buttonIndex].number ) != 0;
 }

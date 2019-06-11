@@ -1,42 +1,43 @@
 #pragma once
-#pragma comment( lib, "bakkesmod.lib" )
-#pragma comment( lib, "XInput.lib" )
-#include "bakkesmod/plugin/bakkesmodplugin.h"
+#include <string>
 #include "windows.h"
 #include "Xinput.h"
-//#include "MappedMemory.h"
 
-enum Gamepad
-{
-	LT = 0,
-	RT,
-	LX,
-	LY,
-	RX,
-	RY,
+enum Analog {
+    LT = 0,
+    RT,
+    LX,
+    LY,
+    RX,
+    RY,
 };
 
-enum source
-{
-	DuraznoBefor,
-	DuraznoAfter,
-	VanillaXinput
+struct GamepadButton {
+    int number;
+    std::string drawName;
+    GamepadButton() {
+        number = 0;
+        drawName = "";
+    }
+    GamepadButton(int num, std::string dn) {
+        number = num;
+        drawName = dn;
+    }
 };
 
-class DurVisGamepad
-{
+class DurVisGamepad {
 public:
-	DurVisGamepad(int source);
-	void update(int i);
-	int getAnalog(int control);
-	string getButtonsPressedString(string delimiter);
-	bool getButtonPressed(int button);
-	int getButtonStateByNumber(int num);
-	string getButtonAsString(int num);
-	~DurVisGamepad();
+    DurVisGamepad();
+    void Update(XINPUT_STATE state);
+    uint8_t GetTrigger(int analogControl);
+    int16_t GetStick(int analogControl);
+    std::string GetButtonsPressedString(std::string delimiter);
+    int GetButtonPressedFrames();
 private:
-	int _source;
-	_XINPUT_STATE _state;
-	//MappedMemory _mm;
-};
+    XINPUT_STATE state_;
+    GamepadButton buttons[14];
 
+    bool GetButtonPressed(int button);
+    int ButtonsPressedFrames_ = 0;
+    int ButtonsPressedFramesLast_ = 0;
+};
